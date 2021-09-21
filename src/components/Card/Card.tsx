@@ -32,7 +32,7 @@ export default function Card({ name, country, flag, weather, weatherIcon, temper
   // This function allows us to remove a city from the list
   async function deleteCity() {
     let localItems = JSON.parse(localStorage.getItem("choosenCities") || '[]')
-    const stateCountryCode = await axios.get(`http://localhost:3001/stateCountryCode?stateName=${state}&countryName=${country}`);
+    const stateCountryCode = await axios.get(`https://edwardweatherapp.herokuapp.com/stateCountryCode?stateName=${state}&countryName=${country}`);
     localItems = localItems.filter((e: string[]) => !(e[0] === name && e[1] === stateCountryCode.data.stateCode && e[2] === stateCountryCode.data.countryCode))
     localStorage.setItem('choosenCities', JSON.stringify(localItems))
     dispatch(modifyChoosenCities(choosenCities.filter((e: City) => !(e.name === name && e.country === country && e.state === state))))
@@ -41,7 +41,7 @@ export default function Card({ name, country, flag, weather, weatherIcon, temper
   // This function allows us to show addicional information of the country
   async function showMore() {
     try {
-      const additionalInfo = await axios.get(`http://localhost:3001/moreCountryInfo?countryName=${country}`);
+      const additionalInfo = await axios.get(`https://edwardweatherapp.herokuapp.com/moreCountryInfo?countryName=${country}`);
       setMoreInfo(additionalInfo.data)
       setModalState(true)
     } catch (e) {
