@@ -79,7 +79,7 @@ export default function App() {
           </div>
           :
           <div className={s.appContainer}>
-            <p className='bold'>Website created by <a className='customLink' href='https://www.linkedin.com/in/edwardburgosdev/' target='_blank' rel='noreferrer'>Edward Burgos</a></p>
+            <p className='bold'>App created by <a className='customLink' href='https://www.linkedin.com/in/edwardburgosdev/' target='_blank' rel='noreferrer'>Edward Burgos</a></p>
             <img className={s.earthGif} src={earthGif} alt='earthGif'></img>
             <SearchBar></SearchBar>
             <div className={s.searchContent}>
