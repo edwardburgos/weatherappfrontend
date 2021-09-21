@@ -1,0 +1,96 @@
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    justify-content: center;
+}
+
+.searchContainer {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.searchButton {
+    width: 100%;
+}
+
+.loadingHorizontal {
+    height: 16px;
+}
+
+.searchInputContainer {
+    width: 100%;
+    text-align: center;
+}
+
+.searchInput {
+    width: 100%;
+    display: inline-block;
+}
+
+.contenedor {
+    padding: 0 50px;
+    padding-bottom: 20px;
+    display: flex;
+    position: fixed;
+    top: 115.20px;
+    right: 0;
+    width: 100%;
+    margin-bottom: 20px;
+    background-color: #E9ECEF;
+}
+
+.inputCity {
+    padding: 5px 10px;
+    border: #E9ECEF solid 2px;
+    border-radius: 5px;
+    width: 100%;
+    
+}
+
+.inputCity:focus {
+    border: #286175 solid 2px;
+    box-shadow: 0 0 10px #27677d;
+}
+
+.inputPassword {
+    padding-right: 2.5rem !important;
+    width: 100%;
+}
+
+.iconDumb {
+    vertical-align: middle;
+    position: absolute;
+    right: 12px;
+    max-height: 50%;
+    cursor: pointer;
+}
+
+.test, .selectContainer {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.selectContainer {
+    width: 100%;
+}
+
+@media screen and (min-width: 768px) {
+    .searchContainer {
+        width: 80%;
+    }
+    .searchInput {
+        width: 75% !important;
+        margin-bottom: 0;
+    }
+    .searchButton {
+        width: 20%;
+        margin-left: 5%;
+    }
+    .test {
+        margin-bottom: 0;
+    }
+}

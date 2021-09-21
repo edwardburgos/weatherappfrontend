@@ -1,0 +1,100 @@
+.container {
+  height: var(--height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  text-align: center;
+} 
+
+.content {
+  width: 100%;
+  max-width: 330px;
+  margin: 0 auto;
+}
+
+.loading {
+  width: 25%;
+}
+
+.earthGif {
+  height: 60px;
+  margin-bottom: 16px;
+}
+
+.appContainer {
+  text-align: center;
+  padding: 16px 5% 0 5%;
+}
+
+.searchContent {
+  display: flex;
+  align-items: center;
+  min-height: calc(100vh - 258px); 
+  justify-content: center;
+}
+
+.cardsContainer {
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.contenedor {
+  display: flex;
+  justify-content:space-between;
+  margin: 0 50px;
+  flex-wrap: wrap;
+}
+
+@media screen and (max-width: 1250px) {
+  .contenedor {
+      display: block;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .searchContent {
+      min-height: calc(100vh - 204px);
+  }
+}

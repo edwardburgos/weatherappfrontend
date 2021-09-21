@@ -1,0 +1,66 @@
+:root {
+  --height: calc(100vh);
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+h1, h2, h3, h4, h5, h6, .bold{
+  font-weight: 600 !important;
+}
+
+.customLink{
+  font-weight: 600;
+  color:#0d6efd;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.customLink:hover{
+  color: #0B5ED7;
+}
+
+.btn:hover {
+  box-shadow: 1px 1px 12px -1px rgb(0 0 0 / 24%) !important;
+  -webkit-box-shadow: 1px 1px 12px -1px rgb(0 0 0 / 24%) !important;
+  border: 1px transparent solid !important;
+}
+
+.disabled, .disabled:hover {
+  pointer-events: none !important;
+  opacity: .65 !important;
+}
+
+.Toastify__toast--default {
+  color: #000 !important;
+  border-radius: 5px !important;
+  border: 1px;
+  box-shadow: 1px 1px 12px -1px rgb(0 0 0 / 24%);
+  -webkit-box-shadow: 1px 1px 12px -1px rgb(0 0 0 / 24%);
+}
+
+.Toastify__close-button--default {
+  opacity: 1 !important;
+}
+
+.Toastify__progress-bar--default {
+  background: #2962ff !important;
+}
+
+@media only screen and (max-width: 576px) {
+  .modal-dialog {
+    margin-left: 5% !important;
+    margin-right: 5% !important;
+  }
+} 
