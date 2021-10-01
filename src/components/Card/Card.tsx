@@ -31,7 +31,7 @@ export default function Card({ name, country, flag, weather, weatherIcon, temper
       <div className={s.card}>
         <img src={closeCircleOutline} className={s.iconDumb} onClick={() => deleteCity()} alt='Remove city'/>
         <div className='w-100'>
-          <h2 className='text-center mb-0'>{name}</h2>
+          <h2 className={s.cardTitle}>{name}</h2>
           <div className={`${s.infoSection} mt-3 mb-0`}>
             <div className={s.iconContainer}>
               <img className={s.countryFlag} src={flag} alt='Country flag'></img>
