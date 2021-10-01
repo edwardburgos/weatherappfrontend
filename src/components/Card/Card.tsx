@@ -1,20 +1,16 @@
-import { useState } from 'react';
 import s from './Card.module.css'
-import { City, Flags, MoreInfo } from '../../extras/types'
+import { City } from '../../extras/types'
 import temperatureIcon from '../../img/others/temperature.svg';
 import windSpeedIcon from '../../img/others/windSpeed.png';
 import closeCircleOutline from "../../img/icons/close-circle-outline.svg";
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { modifyChoosenCities } from '../../actions';
-import { Modal } from 'react-bootstrap';
-import { showMessage } from '../../extras/functions';
 
 export default function Card({ name, country, flag, weather, weatherIcon, temperature, windSpeed, state }: City) {
 
   // Redux states
   const choosenCities = useSelector((state: { choosenCities: City[] }) => state.choosenCities)
-  const flags = useSelector((state: { flags: Flags }) => state.flags)
   
   // Variables
   const dispatch = useDispatch();
