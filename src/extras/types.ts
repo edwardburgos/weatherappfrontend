@@ -9,8 +9,25 @@ export type City = {
     state: string;
 }
 
+export type FullCity = {
+    name: string;
+    country: string;
+    flag: string;
+    weather: [{ description: string, icon: string }]
+    weatherIcon: string;
+    temperature: number;
+    windSpeed: number;
+    state: string;
+    main: {
+        temp: number
+    };
+    wind: {
+        speed: number
+    }
+}
+
 export type Flags = {
-    [key: string]: {default: string}
+    [key: string]: { default: string }
 }
 
 export type MoreInfo = {
@@ -26,7 +43,7 @@ export type MoreInfo = {
     subregion: string,
     population: string,
     demonym: string,
-    borders: {name: string, code: string}[],
+    borders: { name: string, code: string }[],
     currencies: string[],
     languages: string[],
     regionalBlocs: string[]

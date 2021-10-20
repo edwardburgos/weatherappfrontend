@@ -5,7 +5,7 @@ import Card from './components/Card/Card';
 import axios from 'axios';
 import loadingGif from './img/others/loadingGif.gif';
 import earthGif from './img/others/earthGif.gif';
-import { City, Flags } from './extras/types'
+import { City, Flags, FullCity } from './extras/types'
 import { modifyChoosenCities, setCountries, setFlags } from './actions';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -35,7 +35,7 @@ export default function App() {
         // Get user location
         if (!localStorage.getItem("choosenCities")) {
           const locationInfo = await axios.get('https://geolocation-db.com/json/', { cancelToken: source.token });
-          const stateCode = await axios.get(`https://edwardweatherapp.herokuapp.com/cityHasState?city=${locationInfo.data.city}&stateName=${locationInfo.data.state}&countryCode=${locationInfo.data.country_code}`, { cancelToken: source.token })
+          const stateCode = await axios.get(`${process.env.REACT_APP_BACKEND}/cityHasState?city=${locationInfo.data.city}&stateName=${locationInfo.data.state}&countryCode=${locationInfo.data.country_code}`, { cancelToken: source.token })
           const weatherInfo = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${locationInfo.data.city},${(stateCode.data).toString().length && /^[A-Z]+$/.test(stateCode.data) ? stateCode.data : ''},${locationInfo.data.country_code}&appid=${process.env.REACT_APP_API_KEY}`)
           const { weather, main, wind } = weatherInfo.data
           dispatch(modifyChoosenCities([{ name: locationInfo.data.city, country: locationInfo.data.country_name, flag: images[`${locationInfo.data.country_code.toLowerCase()}.svg`].default, weather: weather[0].description.slice(0, 1).toUpperCase() + weather[0].description.slice(1).toLowerCase(), weatherIcon: `http://openweathermap.org/img/w/${weather[0].icon}.png`, temperature: main.temp, windSpeed: wind.speed, state: (stateCode.data).toString().length && /^[A-Z]+$/.test(stateCode.data) ? locationInfo.data.state : '' }]));
@@ -43,17 +43,23 @@ export default function App() {
         } else {
           let localChoosenCities: City[] = []
           const localItems = JSON.parse(localStorage.getItem("choosenCities") || '[]')
-          for (const e of localItems) {
-            const weatherInfo = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${e[0]},${e[1]},${e[2]}&appid=${process.env.REACT_APP_API_KEY}`)
-            const stateCountryName = await axios.get(`https://edwardweatherapp.herokuapp.com/stateCountryName?countryCode=${e[2]}&stateCode=${e[1]}`)
-            const { weather, main, wind } = weatherInfo.data
-            localChoosenCities = [...localChoosenCities, { name: e[0], country: stateCountryName.data.countryName, flag: images[`${e[2].toLowerCase()}.svg`].default, weather: weather[0].description.slice(0, 1).toUpperCase() + weather[0].description.slice(1).toLowerCase(), weatherIcon: `http://openweathermap.org/img/w/${weather[0].icon}.png`, temperature: main.temp, windSpeed: wind.speed, state: stateCountryName.data.stateName }];
-          }
+          let cities: Promise<{ data: FullCity }>[] = []
+          let names: Promise<{ data: { countryName: string, stateName: string } }>[] = []
+          localItems.forEach((e: string[], index: number, array: Array<number>) => {
+            cities.push(axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${e[0]},${e[1]},${e[2]}&appid=${process.env.REACT_APP_API_KEY}`, { cancelToken: source.token }));
+            names.push(axios.get(`${process.env.REACT_APP_BACKEND}/stateCountryName?countryCode=${e[2]}&stateCode=${e[1]}`, { cancelToken: source.token }));
+          })
+          let promises: [Promise<{ data: FullCity }[]>, Promise<{data: { countryName: string, stateName: string }}[]>] = [Promise.all(cities), Promise.all(names)]
+          let resolvedPromises = await Promise.all(promises)
+          localChoosenCities = resolvedPromises[0].map((e, index) => {
+            const { weather, main, wind } = e.data
+            return { name: localItems[index][0], country: resolvedPromises[1][index].data.countryName, flag: images[`${localItems[index][2].toLowerCase()}.svg`].default, weather: weather[0].description.slice(0, 1).toUpperCase() + weather[0].description.slice(1).toLowerCase(), weatherIcon: `http://openweathermap.org/img/w/${weather[0].icon}.png`, temperature: main.temp, windSpeed: wind.speed, state: resolvedPromises[1][index].data.countryName };
+          })
           dispatch(modifyChoosenCities(localChoosenCities))
         }
 
         // Get countries
-        const countries = await axios.get('https://edwardweatherapp.herokuapp.com/countries', { cancelToken: source.token })
+        const countries = await axios.get(`${process.env.REACT_APP_BACKEND}/countries`, { cancelToken: source.token })
         dispatch(setCountries(countries.data))
 
         // The loading state change

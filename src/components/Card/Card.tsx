@@ -20,7 +20,7 @@ export default function Card({ name, country, flag, weather, weatherIcon, temper
   // This function allows us to remove a city from the list
   async function deleteCity() {
     let localItems = JSON.parse(localStorage.getItem("choosenCities") || '[]')
-    const stateCountryCode = await axios.get(`https://edwardweatherapp.herokuapp.com/stateCountryCode?stateName=${state}&countryName=${country}`);
+    const stateCountryCode = await axios.get(`${process.env.REACT_APP_BACKEND}/stateCountryCode?stateName=${state}&countryName=${country}`);
     localItems = localItems.filter((e: string[]) => !(e[0] === name && e[1] === stateCountryCode.data.stateCode && e[2] === stateCountryCode.data.countryCode))
     localStorage.setItem('choosenCities', JSON.stringify(localItems))
     dispatch(modifyChoosenCities(choosenCities.filter((e: City) => !(e.name === name && e.country === country && e.state === state))))
