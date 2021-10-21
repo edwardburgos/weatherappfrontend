@@ -26,7 +26,7 @@ export default function Result({ searchResult, margin }: ResultProps) {
         showMessage(`${searchResult.name}, ${searchResult.state ? `${searchResult.state.name}, ` : ''}${searchResult.country.name} is already in your list`)
       } else {
         localStorage.setItem('choosenCities', JSON.stringify([[searchResult.name, searchResult.state ? searchResult.state.code : '', searchResult.country.code], ...currentStorage]))
-        dispatch(modifyChoosenCities([{ name: searchResult.name, country: searchResult.country.name, flag: flags[`${searchResult.country.code.toLowerCase()}.svg`].default, weather: weather[0].description.slice(0, 1).toUpperCase() + weather[0].description.slice(1).toLowerCase(), weatherIcon: `http://openweathermap.org/img/w/${weather[0].icon}.png`, temperature: main.temp, windSpeed: wind.speed, state: searchResult.state ? searchResult.state.name : '' }, ...choosenCities]))
+        dispatch(modifyChoosenCities([{ name: searchResult.name, country: searchResult.country.name, flag: flags[`${searchResult.country.code.toLowerCase()}.svg`].default, weather: weather[0].description.slice(0, 1).toUpperCase() + weather[0].description.slice(1).toLowerCase(), weatherIcon: `https://openweathermap.org/img/w/${weather[0].icon}.png`, temperature: main.temp, windSpeed: wind.speed, state: searchResult.state ? searchResult.state.name : '' }, ...choosenCities]))
         dispatch(modifyModalState(false))
         showMessage(`${searchResult.name}, ${searchResult.state ? `${searchResult.state.name}, ` : ''}${searchResult.country.name} was added to your list`)
       }
