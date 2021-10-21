@@ -100,17 +100,35 @@ export default function SearchBar() {
       <div className={s.container}>
         <div className={s.searchContainer}>
           <div className={s.selectContainer}>
-            <select className={`form-control`} id="countrySelector" value={country[1]} onChange={e => { setCountry([e.target.value === 'default' ? 'app' : 'user', e.target.value]); e.target.value === 'default' && !city ? noAction() : searchCity(city, ['user', e.target.value]) }} name="country">
+            {/* <select className={`form-control`} id="countrySelector" value={country[1]} onChange={e => { setCountry([e.target.value === 'default' ? 'app' : 'user', e.target.value]); e.target.value === 'default' && !city ? noAction() : searchCity(city, ['user', e.target.value]) }} name="country">
               <option key='default' value='default'>Select a country</option>
               {countries.length ?
                 countries.map(e => <option key={e.code} value={e.code}>{e.name}</option>)
                 : null}
-            </select>
-            <img src={closeCircleOutline} className={s.iconDumb} onClick={() => { setCountry(['app', 'default', 'name']); disableButton('country') }} alt='Remove selected country' />
+            </select> */}
+            <Form.Select value={country[1]} onChange={e => { const target = e.target as HTMLSelectElement; setCountry([target.value === 'default' ? 'app' : 'user', target.value]); target.value === 'default' && !city ? noAction() : searchCity(city, ['user', target.value]) }} name='country'>
+              <option key='default' value='default'>Select a country</option>
+              {countries.length ?
+                countries.map(e => <option key={e.code} value={e.code}>{e.name}</option>)
+                : null}
+            </Form.Select>
+            {
+              country[1] !== 'default' ?
+                <div className={s.deselectContainer}>
+                  <img src={closeCircleOutline} className={s.deselectIcon} onClick={() => { setCountry(['app', 'default', 'name']); disableButton('country') }} alt='Remove selected country' />
+                </div>
+                :
+                null
+            }
           </div>
           <div className={`${s.test} ${s.searchInput}`}>
             <Form.Control value={city} className={` ${s.inputPassword}`} placeholder="Enter a city" onChange={e => { setCity(e.target.value); !e.target.value && country[1] === 'default' ? noAction() : searchCity(e.target.value, country); }} />
-            <img src={closeCircleOutline} className={s.iconDumb} onClick={() => { setCity(''); disableButton('city') }} alt='Remove city' />
+            {
+              city ?
+                <img src={closeCircleOutline} className={s.iconDumb} onClick={() => { setCity(''); disableButton('city') }} alt='Remove city' />
+                :
+                null
+            }
           </div>
           {
             loading ?

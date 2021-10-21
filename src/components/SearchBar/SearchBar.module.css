@@ -59,6 +59,21 @@
     width: 100%;
 }
 
+.deselectContainer {
+    background-color: #fff;
+    position: absolute;
+    right: 12px;
+    height: 36px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.deselectIcon {
+    height: 19px;
+    width: 19px;
+}
+
 .iconDumb {
     vertical-align: middle;
     position: absolute;
@@ -78,10 +93,7 @@
     width: 100%;
 }
 
-@media screen and (min-width: 768px) {
-    .searchContainer {
-        width: 80%;
-    }
+@media screen and (min-width: 576px) {
     .searchInput {
         width: 75% !important;
         margin-bottom: 0;

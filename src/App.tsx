@@ -4,7 +4,6 @@ import SearchBar from './components/SearchBar/SearchBar';
 import Card from './components/Card/Card';
 import axios from 'axios';
 import loadingGif from './img/others/loadingGif.gif';
-import earthGif from './img/others/earthGif.gif';
 import { City, Flags, FullCity } from './extras/types'
 import { modifyChoosenCities, setCountries, setFlags } from './actions';
 import { useDispatch, useSelector } from 'react-redux';
@@ -85,8 +84,6 @@ export default function App() {
           </div>
           :
           <div className={s.appContainer}>
-            <p className='bold'>App created by <a className='customLink' href='https://www.linkedin.com/in/edwardburgosdev/' target='_blank' rel='noreferrer'>Edward Burgos</a></p>
-            <img className={s.earthGif} src={earthGif} alt='earthGif'></img>
             <SearchBar></SearchBar>
             <div className={s.searchContent}>
               <div className={s.cardsContainer}>
