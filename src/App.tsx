@@ -41,10 +41,12 @@ export default function App() {
           localStorage.setItem('choosenCities', JSON.stringify([[locationInfo.data.city, (stateCode.data).toString().length && /^[A-Z]+$/.test(stateCode.data) ? stateCode.data : '', locationInfo.data.country_code]]));
         } else {
           let localChoosenCities: City[] = []
-          const localItems = JSON.parse(localStorage.getItem("choosenCities") || '[]')
+          const local: string[] = JSON.parse(localStorage.getItem("choosenCities") || '[]').map((e: string[]) => JSON.stringify(e))
+          let set = new Set(local).values();
+          const localItems: string[][] = Array.from(set).map((e:string) => JSON.parse(e))
           let cities: Promise<{ data: FullCity }>[] = []
           let names: Promise<{ data: { countryName: string, stateName: string } }>[] = []
-          localItems.forEach((e: string[], index: number, array: Array<number>) => {
+          localItems.forEach((e: string[]) => {
             cities.push(axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${e[0]},${e[1]},${e[2]}&appid=${process.env.REACT_APP_API_KEY}`, { cancelToken: source.token }));
             names.push(axios.get(`${process.env.REACT_APP_BACKEND}/stateCountryName?countryCode=${e[2]}&stateCode=${e[1]}`, { cancelToken: source.token }));
           })
@@ -55,6 +57,7 @@ export default function App() {
             return { name: localItems[index][0], country: resolvedPromises[1][index].data.countryName, flag: images[`${localItems[index][2].toLowerCase()}.svg`].default, weather: weather[0].description.slice(0, 1).toUpperCase() + weather[0].description.slice(1).toLowerCase(), weatherIcon: `http://openweathermap.org/img/w/${weather[0].icon}.png`, temperature: main.temp, windSpeed: wind.speed, state: resolvedPromises[1][index].data.countryName };
           })
           dispatch(modifyChoosenCities(localChoosenCities))
+          localStorage.setItem('choosenCities', JSON.stringify(localItems))
         }
 
         // Get countries
