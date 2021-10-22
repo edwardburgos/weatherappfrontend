@@ -100,12 +100,6 @@ export default function SearchBar() {
       <div className={s.container}>
         <div className={s.searchContainer}>
           <div className={s.selectContainer}>
-            {/* <select className={`form-control`} id="countrySelector" value={country[1]} onChange={e => { setCountry([e.target.value === 'default' ? 'app' : 'user', e.target.value]); e.target.value === 'default' && !city ? noAction() : searchCity(city, ['user', e.target.value]) }} name="country">
-              <option key='default' value='default'>Select a country</option>
-              {countries.length ?
-                countries.map(e => <option key={e.code} value={e.code}>{e.name}</option>)
-                : null}
-            </select> */}
             <Form.Select value={country[1]} onChange={e => { const target = e.target as HTMLSelectElement; setCountry([target.value === 'default' ? 'app' : 'user', target.value]); target.value === 'default' && !city ? noAction() : searchCity(city, ['user', target.value]) }} name='country'>
               <option key='default' value='default'>Select a country</option>
               {countries.length ?
