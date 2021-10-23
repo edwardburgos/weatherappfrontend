@@ -54,7 +54,7 @@ export default function App() {
           let resolvedPromises = await Promise.all(promises)
           localChoosenCities = resolvedPromises[0].map((e, index) => {
             const { weather, main, wind } = e.data
-            return { name: localItems[index][0], country: resolvedPromises[1][index].data.countryName, flag: images[`${localItems[index][2].toLowerCase()}.svg`].default, weather: weather[0].description.slice(0, 1).toUpperCase() + weather[0].description.slice(1).toLowerCase(), weatherIcon: `https://openweathermap.org/img/w/${weather[0].icon}.png`, temperature: main.temp, windSpeed: wind.speed, state: resolvedPromises[1][index].data.countryName };
+            return { name: localItems[index][0], country: resolvedPromises[1][index].data.countryName, flag: images[`${localItems[index][2].toLowerCase()}.svg`].default, weather: weather[0].description.slice(0, 1).toUpperCase() + weather[0].description.slice(1).toLowerCase(), weatherIcon: `https://openweathermap.org/img/w/${weather[0].icon}.png`, temperature: main.temp, windSpeed: wind.speed, state: resolvedPromises[1][index].data.stateName };
           })
           dispatch(modifyChoosenCities(localChoosenCities))
           localStorage.setItem('choosenCities', JSON.stringify(localItems))
