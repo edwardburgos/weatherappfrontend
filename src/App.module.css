@@ -41,6 +41,16 @@
   flex-wrap: wrap;
 }
 
+.emptyVector {
+  width: 150px;
+}
+
+.noCities {
+  font-weight: 600;
+  width: 100%;
+  margin: 16px 0 0 0 !important;
+}
+
 .App {
   text-align: center;
 }

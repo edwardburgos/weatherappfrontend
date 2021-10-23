@@ -7,6 +7,7 @@ import loadingGif from './img/others/loadingGif.gif';
 import { City, Flags, FullCity } from './extras/types'
 import { modifyChoosenCities, setCountries, setFlags } from './actions';
 import { useDispatch, useSelector } from 'react-redux';
+import noResults from './img/others/noResults.svg'
 
 export default function App() {
 
@@ -100,7 +101,10 @@ export default function App() {
                       }
                     </>
                     :
-                    <p className='bold'>Your city list is empty</p>
+                    <>
+                    <img className={s.emptyVector} src={noResults} alt='Empty vector'></img>
+                    <p className={s.noCities}>Your city list is empty</p>
+                    </>
                 }
               </div>
             </div>
