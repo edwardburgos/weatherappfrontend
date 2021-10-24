@@ -31,34 +31,24 @@ export default function App() {
     dispatch(setFlags(images))
     async function getInfo() {
       try {
-
-        // Get user location
         if (!localStorage.getItem("choosenCities")) {
-          navigator.permissions.query({name:'geolocation'}).then(function(result) {
-            if (result.state === 'granted') {
-              console.log('SI')
-            } else {
-              console.log('NO')
-            }
-             // geoBtn.style.display = 'none';
-            // } else if (result.state == 'prompt') {
-            //   report(result.state);
-            //   geoBtn.style.display = 'none';
-            //   navigator.geolocation.getCurrentPosition(revealPosition,positionDenied,geoSettings);
-            // } else if (result.state == 'denied') {
-            //   report(result.state);
-            //   geoBtn.style.display = 'inline';
-            // }
-            // result.onchange = function() {
-            //   report(result.state);
-            // }
-          });
-          // const locationInfo = await axios.get('https://geolocation-db.com/json/', { cancelToken: source.token });
-          // const stateCode = await axios.get(`${process.env.REACT_APP_BACKEND}/cityHasState?city=${locationInfo.data.city}&stateName=${locationInfo.data.state}&countryCode=${locationInfo.data.country_code}`, { cancelToken: source.token })
-          // const weatherInfo = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${locationInfo.data.city},${(stateCode.data).toString().length && /^[A-Z]+$/.test(stateCode.data) ? stateCode.data : ''},${locationInfo.data.country_code}&appid=${process.env.REACT_APP_API_KEY}`)
-          // const { weather, main, wind } = weatherInfo.data
-          // dispatch(modifyChoosenCities([{ name: locationInfo.data.city, country: locationInfo.data.country_name, flag: images[`${locationInfo.data.country_code.toLowerCase()}.svg`].default, weather: weather[0].description.slice(0, 1).toUpperCase() + weather[0].description.slice(1).toLowerCase(), weatherIcon: `https://openweathermap.org/img/w/${weather[0].icon}.png`, temperature: main.temp, windSpeed: wind.speed, state: (stateCode.data).toString().length && /^[A-Z]+$/.test(stateCode.data) ? locationInfo.data.state : '' }]));
-          // localStorage.setItem('choosenCities', JSON.stringify([[locationInfo.data.city, (stateCode.data).toString().length && /^[A-Z]+$/.test(stateCode.data) ? stateCode.data : '', locationInfo.data.country_code]]));
+          // If geolocation is supported by the user's browser
+          if (navigator.geolocation) {
+            // This line opens the popup if user has not allows us but do not open it if user has blocked or allowed us before
+            navigator.geolocation.getCurrentPosition(function (position) {
+              // This code is executed if the used allows us to know his location or if he has allowed us before
+              async function getLocation() {
+                const locationInfo = await axios.get(`https://api.opencagedata.com/geocode/v1/json?key=${process.env.REACT_APP_OPENCAGEDATA_API_KEY}&q=${position.coords.latitude}%2C+${position.coords.longitude}&pretty=1&no_annotations=1`, { cancelToken: source.token })
+                const { city, country_code, state } = locationInfo.data.results[0].components
+                const stateCode = await axios.get(`${process.env.REACT_APP_BACKEND}/cityHasState?city=${city}&stateName=${state}&countryCode=${country_code.toUpperCase()}`, { cancelToken: source.token })
+                const weatherInfo = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${city},${(stateCode.data.stateCode).toString().length && /^[A-Z]+$/.test(stateCode.data.stateCode) ? stateCode.data.stateCode : ''},${country_code.toUpperCase()}&appid=${process.env.REACT_APP_API_KEY}`)
+                const { weather, main, wind } = weatherInfo.data
+                dispatch(modifyChoosenCities([{ name: city, country: stateCode.data.countryName, flag: images[`${country_code.toLowerCase()}.svg`].default, weather: weather[0].description.slice(0, 1).toUpperCase() + weather[0].description.slice(1).toLowerCase(), weatherIcon: `https://openweathermap.org/img/w/${weather[0].icon}.png`, temperature: main.temp, windSpeed: wind.speed, state: (stateCode.data.stateCode).toString().length && /^[A-Z]+$/.test(stateCode.data.stateCode) ? state : '' }]));
+                localStorage.setItem('choosenCities', JSON.stringify([[city, (stateCode.data.stateCode).toString().length && /^[A-Z]+$/.test(stateCode.data.stateCode) ? stateCode.data.stateCode : '', country_code.toUpperCase()]]));
+              }
+              getLocation()
+            });
+          }
         } else {
           let localChoosenCities: City[] = []
           const local: string[] = JSON.parse(localStorage.getItem("choosenCities") || '[]').map((e: string[]) => JSON.stringify(e))
@@ -121,8 +111,8 @@ export default function App() {
                     </>
                     :
                     <>
-                    <img className={s.emptyVector} src={noResults} alt='Empty vector'></img>
-                    <p className={s.noCities}>Your city list is empty</p>
+                      <img className={s.emptyVector} src={noResults} alt='Empty vector'></img>
+                      <p className={s.noCities}>Your city list is empty</p>
                     </>
                 }
               </div>
