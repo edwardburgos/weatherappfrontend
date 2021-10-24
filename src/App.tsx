@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import s from './App.module.css';
 import SearchBar from './components/SearchBar/SearchBar';
 import Card from './components/Card/Card';
-import axios from 'axios';
+import axios, { CancelToken } from 'axios';
 import loadingGif from './img/others/loadingGif.gif';
 import { City, Flags, FullCity } from './extras/types'
 import { modifyChoosenCities, setCountries, setFlags } from './actions';
@@ -13,6 +13,7 @@ export default function App() {
 
   // Redux states
   const choosenCities = useSelector((state: { choosenCities: City[] }) => state.choosenCities)
+  const flags = useSelector((state: { flags: Flags }) => state.flags)
 
   // Own states
   const [loading, setLoading] = useState<boolean>(true);
@@ -20,6 +21,25 @@ export default function App() {
   // Variables
   const dispatch = useDispatch();
 
+
+  function getCurrentLocation(images: Flags, cancelToken: CancelToken | null) {
+    if (navigator.geolocation) {
+      // This line opens the popup if user has not allows us but do not open it if user has blocked or allowed us before
+      navigator.geolocation.getCurrentPosition(function (position) {
+        // This code is executed if the used allows us to know his location or if he has allowed us before
+        async function getLocation() {
+          const locationInfo = await axios.get(`https://api.opencagedata.com/geocode/v1/json?key=${process.env.REACT_APP_OPENCAGEDATA_API_KEY}&q=${position.coords.latitude}%2C+${position.coords.longitude}&pretty=1&no_annotations=1`, cancelToken ? { cancelToken } : undefined)
+          const { city, country_code, state } = locationInfo.data.results[0].components
+          const stateCode = await axios.get(`${process.env.REACT_APP_BACKEND}/cityHasState?city=${city}&stateName=${state}&countryCode=${country_code.toUpperCase()}`, cancelToken ? { cancelToken } : undefined)
+          const weatherInfo = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${city},${(stateCode.data.stateCode).toString().length && /^[A-Z]+$/.test(stateCode.data.stateCode) ? stateCode.data.stateCode : ''},${country_code.toUpperCase()}&appid=${process.env.REACT_APP_API_KEY}`, cancelToken ? { cancelToken } : undefined)
+          const { weather, main, wind } = weatherInfo.data
+          dispatch(modifyChoosenCities([{ name: city, country: stateCode.data.countryName, flag: images[`${country_code.toLowerCase()}.svg`].default, weather: weather[0].description.slice(0, 1).toUpperCase() + weather[0].description.slice(1).toLowerCase(), weatherIcon: `https://openweathermap.org/img/w/${weather[0].icon}.png`, temperature: main.temp, windSpeed: wind.speed, state: (stateCode.data.stateCode).toString().length && /^[A-Z]+$/.test(stateCode.data.stateCode) ? state : '' }]));
+          localStorage.setItem('choosenCities', JSON.stringify([[city, (stateCode.data.stateCode).toString().length && /^[A-Z]+$/.test(stateCode.data.stateCode) ? stateCode.data.stateCode : '', country_code.toUpperCase()]]));
+        }
+        getLocation()
+      });
+    }
+  }
   // Hooks
 
   // This hook set the user location and countries 
@@ -33,22 +53,7 @@ export default function App() {
       try {
         if (!localStorage.getItem("choosenCities")) {
           // If geolocation is supported by the user's browser
-          if (navigator.geolocation) {
-            // This line opens the popup if user has not allows us but do not open it if user has blocked or allowed us before
-            navigator.geolocation.getCurrentPosition(function (position) {
-              // This code is executed if the used allows us to know his location or if he has allowed us before
-              async function getLocation() {
-                const locationInfo = await axios.get(`https://api.opencagedata.com/geocode/v1/json?key=${process.env.REACT_APP_OPENCAGEDATA_API_KEY}&q=${position.coords.latitude}%2C+${position.coords.longitude}&pretty=1&no_annotations=1`, { cancelToken: source.token })
-                const { city, country_code, state } = locationInfo.data.results[0].components
-                const stateCode = await axios.get(`${process.env.REACT_APP_BACKEND}/cityHasState?city=${city}&stateName=${state}&countryCode=${country_code.toUpperCase()}`, { cancelToken: source.token })
-                const weatherInfo = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${city},${(stateCode.data.stateCode).toString().length && /^[A-Z]+$/.test(stateCode.data.stateCode) ? stateCode.data.stateCode : ''},${country_code.toUpperCase()}&appid=${process.env.REACT_APP_API_KEY}`)
-                const { weather, main, wind } = weatherInfo.data
-                dispatch(modifyChoosenCities([{ name: city, country: stateCode.data.countryName, flag: images[`${country_code.toLowerCase()}.svg`].default, weather: weather[0].description.slice(0, 1).toUpperCase() + weather[0].description.slice(1).toLowerCase(), weatherIcon: `https://openweathermap.org/img/w/${weather[0].icon}.png`, temperature: main.temp, windSpeed: wind.speed, state: (stateCode.data.stateCode).toString().length && /^[A-Z]+$/.test(stateCode.data.stateCode) ? state : '' }]));
-                localStorage.setItem('choosenCities', JSON.stringify([[city, (stateCode.data.stateCode).toString().length && /^[A-Z]+$/.test(stateCode.data.stateCode) ? stateCode.data.stateCode : '', country_code.toUpperCase()]]));
-              }
-              getLocation()
-            });
-          }
+          getCurrentLocation(images, source.token)
         } else {
           let localChoosenCities: City[] = []
           const local: string[] = JSON.parse(localStorage.getItem("choosenCities") || '[]').map((e: string[]) => JSON.stringify(e))
@@ -84,6 +89,7 @@ export default function App() {
     }
     getInfo();
     return () => source.cancel("Unmounted");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch])
 
   return (
@@ -113,6 +119,7 @@ export default function App() {
                     <>
                       <img className={s.emptyVector} src={noResults} alt='Empty vector'></img>
                       <p className={s.noCities}>Your city list is empty</p>
+                      <button className='btn btn-primary' onClick={() => getCurrentLocation(flags, null)}>Add the city where I am located</button>
                     </>
                 }
               </div>
