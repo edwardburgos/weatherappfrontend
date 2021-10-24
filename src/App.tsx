@@ -24,7 +24,7 @@ export default function App() {
 
   function getCurrentLocation(images: Flags, cancelToken: CancelToken | null) {
     if (navigator.geolocation) {
-      // This line opens the popup if user has not allows us but do not open it if user has blocked or allowed us before
+      // This line opens the location popup if user has not allows us but do not open it if user has blocked or allowed us before
       navigator.geolocation.getCurrentPosition(function (position) {
         // This code is executed if the used allows us to know his location or if he has allowed us before
         async function getLocation() {
