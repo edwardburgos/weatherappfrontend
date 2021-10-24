@@ -54,7 +54,7 @@
     box-shadow: 0 0 10px #27677d;
 }
 
-.inputPassword {
+.inputToSearch {
     padding-right: 2.5rem !important;
     width: 100%;
 }
@@ -95,12 +95,12 @@
 
 @media screen and (min-width: 576px) {
     .searchInput {
-        width: 75% !important;
+        width: calc(100% - 166px) !important;
         margin-bottom: 0;
     }
     .searchButton {
-        width: 20%;
-        margin-left: 5%;
+        width: 150px;
+        margin-left: 16px;
     }
     .test {
         margin-bottom: 0;

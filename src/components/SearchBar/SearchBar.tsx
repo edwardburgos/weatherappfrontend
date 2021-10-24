@@ -116,7 +116,7 @@ export default function SearchBar() {
             }
           </div>
           <div className={`${s.test} ${s.searchInput}`}>
-            <Form.Control value={city} className={` ${s.inputPassword}`} placeholder="Enter a city" onChange={e => { setCity(e.target.value); !e.target.value && country[1] === 'default' ? noAction() : searchCity(e.target.value, country); }} />
+            <Form.Control value={city} className={s.inputToSearch} placeholder="Enter a city" onChange={e => { setCity(e.target.value); !e.target.value && country[1] === 'default' ? noAction() : searchCity(e.target.value, country); }} />
             {
               city ?
                 <img src={closeCircleOutline} className={s.iconDumb} onClick={() => { setCity(''); disableButton('city') }} alt='Remove city' />
