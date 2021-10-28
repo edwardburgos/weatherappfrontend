@@ -58,6 +58,7 @@ export default function SearchBar() {
   // This function allows us to add a city to the list
   async function add() {
     try {
+      console.log(country)
       const citieInfo = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${city},${state[0] !== 'code' ? state[0] : ''},${country[1]}&appid=${process.env.REACT_APP_API_KEY}`)
       const { weather, main, wind } = citieInfo.data
       let currentStorage = JSON.parse(localStorage.getItem('choosenCities') || '[]')
@@ -100,7 +101,7 @@ export default function SearchBar() {
       <div className={s.container}>
         <div className={s.searchContainer}>
           <div className={s.selectContainer}>
-            <Form.Select value={country[1]} onChange={e => { const target = e.target as HTMLSelectElement; setCountry([target.value === 'default' ? 'app' : 'user', target.value]); target.value === 'default' && !city ? noAction() : searchCity(city, ['user', target.value]) }} name='country'>
+            <Form.Select value={country[1]} onChange={e => { const target = e.target as HTMLSelectElement; setCountry([target.value === 'default' ? 'app' : 'user', target.value, countries.filter(e => e.code === target.value)[0].name]); target.value === 'default' && !city ? noAction() : searchCity(city, ['user', target.value]) }} name='country'>
               <option key='default' value='default'>Select a country</option>
               {countries.length ?
                 countries.map(e => <option key={e.code} value={e.code}>{e.name}</option>)
